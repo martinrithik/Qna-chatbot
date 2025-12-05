@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electrical Machines Q&A Platform</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        form { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 4px; background-color: #fafafa; }
+        textarea { width: 98%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; resize: vertical; }
+        button { background-color: #5cb85c; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #4cae4c; }
+        .qa-item { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 4px; }
+        .question-text { font-weight: bold; color: #337ab7; margin-bottom: 5px; }
+        .answer-text { margin-top: 10px; padding-left: 10px; border-left: 3px solid #5cb85c; }
+        .logout-link { float: right; font-size: 0.9em; }
+        .user-info { margin-bottom: 15px; font-size: 0.9em; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="container">
+       <div class="logout-link">
+    <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; padding: 0; font-size: 0.9em; text-decoration: underline;">
+            Logout
+        </button>
+    </form>
+</div>
+        <h1>Electrical Machines Q&A</h1>
+        
+        <div class="user-info">
+            Welcome, **{{ user.username }}**!
+            {% if error %}
+                <p style="color: red; font-weight: bold;">{{ error }}</p>
+            {% endif %}
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <h2>Ask a Question</h2>
+            <textarea name="question" rows="4" placeholder="Type your question about electrical machines here..." required></textarea>
+            <button type="submit">Get Answer</button>
+        </form>
+
+        <h2>Your Questions and Answers</h2>
+        
+        {# CRITICAL CHANGE: Loop through the 'questions' context variable (which holds QnaRecord objects) #}
+        {% for record in questions %}
+            <div class="qa-item">
+                {# Display the question text directly from the record object #}
+                <div class="question-text">Q: **{{ record.question_text }}** (Asked: {{ record.created_at|date:"M d, H:i" }})</div>
+                
+                {# Check if the answer_text field is populated #}
+                {% if record.answer_text %}
+                    {# Display the answer text directly from the record object #}
+                    <div class="answer-text">A: {{ record.answer_text|linebreaks }}</div>
+                    {# Note: source_model field was removed to meet the 5-column constraint, so this line is removed. #}
+                {% else %}
+                    <div style="color: orange;">Status: Processing Answer...</div>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>You haven't asked any questions yet. Use the form above to start!</p>
+        {% endfor %}
+
+    </div>
+</body>
+</html>

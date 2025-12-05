@@ -1,0 +1,18 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+
+# Dependency directories
+/venv/
+/env/
+
+# Django specific files
+*.sqlite3
+/media/
+/static_collected/
+
+# Environment Variables (CRITICAL!)
+# This line ensures your API key file is NEVER committed to Git.
+key.env
