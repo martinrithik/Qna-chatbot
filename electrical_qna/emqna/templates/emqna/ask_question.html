@@ -47,17 +47,17 @@
 
         <h2>Your Questions and Answers</h2>
         
-        {# CRITICAL CHANGE: Loop through the 'questions' context variable (which holds QnaRecord objects) #}
+
         {% for record in questions %}
             <div class="qa-item">
-                {# Display the question text directly from the record object #}
+                
                 <div class="question-text">Q: **{{ record.question_text }}** (Asked: {{ record.created_at|date:"M d, H:i" }})</div>
                 
-                {# Check if the answer_text field is populated #}
+                
                 {% if record.answer_text %}
-                    {# Display the answer text directly from the record object #}
+                    
                     <div class="answer-text">A: {{ record.answer_text|linebreaks }}</div>
-                    {# Note: source_model field was removed to meet the 5-column constraint, so this line is removed. #}
+                    
                 {% else %}
                     <div style="color: orange;">Status: Processing Answer...</div>
                 {% endif %}
